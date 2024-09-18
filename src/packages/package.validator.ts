@@ -12,6 +12,7 @@ export const isPackage = Yup.object().shape({
   to_name: Yup.string().required(),
   to_address: Yup.string().required(),
   to_location: Yup.array().of(Yup.number().required()).required(),
+  active_delivery: Yup.string().optional(),
 });
 
 export type PackageDTO = Yup.InferType<typeof isPackage>;

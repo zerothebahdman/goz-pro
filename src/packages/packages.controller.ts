@@ -22,7 +22,7 @@ import { Request, Response } from 'express';
 import { YupValidationPipe } from '@blinkclaud/octobus';
 import { isPackage, isPackageID, PackageDTO } from './package.validator';
 import { Package } from './schema/package.schema';
-import mongoose from 'mongoose';
+import { DeliveriesService } from '../deliveries';
 
 type PackageControllerRes = Package | Package[];
 
@@ -30,6 +30,7 @@ type PackageControllerRes = Package | Package[];
 @Controller({ path: 'packages', version: '1' })
 export class PackagesController extends ControllerRes<PackageControllerRes> {
   @Inject(TYPES.PackageService) private readonly packages: PackagesService;
+  @Inject(TYPES.DeliveryService) private readonly deliveries: DeliveriesService;
 
   @Get('/')
   async getPackages(@Req() req: Request, @Res() res: Response, @Query() query: any) {
@@ -90,5 +91,7 @@ export class PackagesController extends ControllerRes<PackageControllerRes> {
 
     await this.packages.remove(resp.id);
     this.send(req, res, null);
+
+    await this.deliveries.deletePackageDeliveries(resp.id);
   }
 }

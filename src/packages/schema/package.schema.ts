@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import mongoose, { Document, HydratedDocument } from 'mongoose';
+import { Delivery } from '../../deliveries';
 
 export type PackageDocument = HydratedDocument<Package>;
 
@@ -24,7 +25,7 @@ export interface PackageLocation {
 })
 export class Package extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Delivery' })
-  active_delivery: string;
+  active_delivery: Delivery;
 
   @Prop({ required: true })
   description: string;

@@ -31,13 +31,13 @@ export class Delivery extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Package' })
   package: Package;
 
-  @Prop({ required: true, type: Date })
+  @Prop({ type: Date })
   pickup_time: Date;
 
-  @Prop({ required: true, type: Date })
+  @Prop({ type: Date })
   start_time: Date;
 
-  @Prop({ required: true, type: Date })
+  @Prop({ type: Date })
   end_time: Date;
 
   @Prop(
