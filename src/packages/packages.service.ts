@@ -1,26 +1,73 @@
-import { CreatePackageDto } from './dto/create-package.dto';
+import { Package, PackageDocument, PackageLocation } from './schema/package.schema';
+import mongoose, { Model } from 'mongoose';
+
+import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { UpdatePackageDto } from './dto/update-package.dto';
+import { PackageDTO } from './package.validator';
 
 @Injectable()
 export class PackagesService {
-  create(createPackageDto: CreatePackageDto) {
-    return 'This action adds a new package';
+  @InjectModel(Package.name) private readonly package: Model<Package>;
+
+  /**
+   * Creates a new package
+   * @param dto - The package to create
+   * @returns The created package
+   */
+  async create(dto: PackageDTO) {
+    const toLocation: PackageLocation = {
+      type: 'Point',
+      coordinates: dto.to_location,
+    };
+    const fromLocation: PackageLocation = {
+      type: 'Point',
+      coordinates: dto.from_location,
+    };
+    return await this.package.create({
+      ...dto,
+      to_location: toLocation,
+      from_location: fromLocation,
+    });
   }
 
-  findAll() {
-    return `This action returns all packages`;
+  /**
+   * Finds all packages
+   * @param query the query object
+   * @returns the array of packages
+   */
+  async findAll(query: Partial<Package>) {
+    return await this.package.find<Package>();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} package`;
+  async findOne(id: string) {
+    return await this.package.findById(new mongoose.Types.ObjectId(id));
   }
 
-  update(id: number, updatePackageDto: UpdatePackageDto) {
-    return `This action updates a #${id} package`;
+  /**
+   * Updates a package document in the database.
+   * @param id - The id of the package document to update.
+   * @param dto - The package data to update with.
+   * @returns The updated package document.
+   */
+  async update(packageData: PackageDocument, dto: PackageDTO) {
+    const toLocation: PackageLocation = {
+      type: 'Point',
+      coordinates: dto.to_location,
+    };
+    const fromLocation: PackageLocation = {
+      type: 'Point',
+      coordinates: dto.from_location,
+    };
+    packageData.set({ ...dto, to_location: toLocation, from_location: fromLocation });
+    return packageData.save();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} package`;
+  /**
+   * Removes a package document from the database.
+   * @param id - The id of the package document to remove.
+   * @returns The removed package document.
+   */
+  async remove(id: string) {
+    return await this.package.findByIdAndDelete(new mongoose.Types.ObjectId(id));
   }
 }

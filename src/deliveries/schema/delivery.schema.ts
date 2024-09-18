@@ -1,4 +1,4 @@
-import { Prop, Schema, raw } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import mongoose, { Document, HydratedDocument } from 'mongoose';
 
 import { Package } from '../../packages';
@@ -51,3 +51,5 @@ export class Delivery extends Document {
   @Prop({ required: true, type: String, enum: deliveryStatus, default: 'open' })
   status: DeliveryStatus;
 }
+
+export const DeliverySchema = SchemaFactory.createForClass(Delivery);

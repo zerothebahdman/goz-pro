@@ -15,13 +15,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     response.status(status).json({
       status: status.toString().startsWith('4') ? 'error' : 'fail',
-      statusCode: status,
       message,
-      timestamp: new Date().toISOString(),
-      ...(env().env === 'development' && { path: request.url }),
-      ...(env().env === 'development' && {
-        stack: exception.stack,
-      }),
     });
   }
 }

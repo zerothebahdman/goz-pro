@@ -1,13 +1,11 @@
-import { Document, HydratedDocument } from 'mongoose';
-import { Prop, Schema, raw } from '@nestjs/mongoose';
-
-import { UUID } from 'node:crypto';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
+import mongoose, { Document, HydratedDocument } from 'mongoose';
 
 export type PackageDocument = HydratedDocument<Package>;
 
 export interface PackageLocation {
-  type: string;
-  coordinates: [number, number];
+  type: 'Point';
+  coordinates: number[];
 }
 
 @Schema({
@@ -25,8 +23,8 @@ export interface PackageLocation {
   },
 })
 export class Package extends Document {
-  @Prop({ required: true })
-  active_delivery_id: UUID;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Delivery' })
+  active_delivery: string;
 
   @Prop({ required: true })
   description: string;
@@ -71,3 +69,5 @@ export class Package extends Document {
   )
   to_location: PackageLocation;
 }
+
+export const PackageSchema = SchemaFactory.createForClass(Package);
