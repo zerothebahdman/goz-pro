@@ -15,12 +15,8 @@ import ms from 'ms';
 export class ControllerRes<T> {
   @Inject(LIB_TYPES.Logger) private readonly logger: Logger;
 
-  protected send(req: Request, res: Response, data: T, opts?: { [key: string]: string | number }) {
-    res.status(HttpStatus.OK).json({
-      status: 'success',
-      data,
-      ...opts,
-    });
+  protected send(req: Request, res: Response, data: T) {
+    res.status(HttpStatus.OK).json({ status: 'success', data });
     this.logger.response(req, res);
   }
 }
