@@ -4,6 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { PackageDTO } from './package.validator';
+import { paginate, PaginationModel, PaginationOptions } from '../common/pagination-wrapper';
 
 @Injectable()
 export class PackagesService {
@@ -35,8 +36,11 @@ export class PackagesService {
    * @param query the query object
    * @returns the array of packages
    */
-  async findAll(query: Partial<Package>) {
-    return await this.package.find<Package>().populate('active_delivery');
+  async findAll(filter: Partial<PackageDocument>, options?: Partial<PaginationOptions>, shouldPaginate = true) {
+    Object.assign(options, { populate: 'active_delivery' });
+    return shouldPaginate
+      ? <PaginationModel<Package>>await paginate(filter, this.package, options)
+      : await this.package.find(<mongoose.FilterQuery<Package>>filter).populate('package');
   }
 
   async findOne(id: string) {

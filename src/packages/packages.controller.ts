@@ -23,8 +23,10 @@ import { YupValidationPipe } from '@blinkclaud/octobus';
 import { isPackage, isPackageID, PackageDTO } from './package.validator';
 import { Package } from './schema/package.schema';
 import { DeliveryService } from '../deliveries';
+import pick from '../common/pick';
+import { PaginationModel } from '../common/pagination-wrapper';
 
-type PackageControllerRes = Package | Package[];
+type PackageControllerRes = Package | Package[] | PaginationModel<Package>;
 
 @UseFilters(new HttpExceptionFilter())
 @Controller({ path: 'packages', version: '1' })
@@ -35,7 +37,8 @@ export class PackagesController extends ControllerRes<PackageControllerRes> {
   @Get('/')
   async getPackages(@Req() req: Request, @Res() res: Response, @Query() query: any) {
     try {
-      const resp = await this.packages.findAll(query);
+      const options = pick(query, ['page', 'limit', 'populate', 'order_by']);
+      const resp = await this.packages.findAll({}, options);
       this.send(req, res, resp);
     } catch (error) {
       throw error;

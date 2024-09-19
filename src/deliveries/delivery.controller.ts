@@ -11,6 +11,7 @@ import {
   Req,
   Res,
   UseFilters,
+  Query,
 } from '@nestjs/common';
 
 import { DeliveryService } from './delivery.service';
@@ -22,8 +23,10 @@ import { Request, Response } from 'express';
 import { YupValidationPipe } from '@blinkclaud/octobus';
 import { DeliveryDTO, isDelivery, isDeliveryID } from './delivery.validator';
 import { PackagesService } from '../packages';
+import { PaginationModel } from '../common/pagination-wrapper';
+import pick from '../common/pick';
 
-type ControllerResponse = Delivery | Delivery[];
+type ControllerResponse = Delivery | Delivery[] | PaginationModel<Delivery>;
 @UseFilters(new HttpExceptionFilter())
 @Controller({ path: '/deliveries', version: '1' })
 export class DeliveriesController extends ControllerRes<ControllerResponse> {
@@ -52,8 +55,11 @@ export class DeliveriesController extends ControllerRes<ControllerResponse> {
   }
 
   @Get('/')
-  async getDeliveries(@Req() req: Request, @Res() res: Response) {
-    const resp = await this.deliveries.findAll();
+  async getDeliveries(@Req() req: Request, @Res() res: Response, @Query() query: any) {
+    const filter = pick(query, ['package', 'status']);
+    const options = pick(query, ['page', 'limit', 'populate', 'order_by']);
+
+    const resp = await this.deliveries.findAll(filter, options);
     this.send(req, res, resp);
   }
 

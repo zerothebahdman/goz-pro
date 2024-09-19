@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import mongoose, { Document, HydratedDocument } from 'mongoose';
+
 import { Delivery } from '../../deliveries';
 
 export type PackageDocument = HydratedDocument<Package>;
@@ -71,4 +72,5 @@ export class Package extends Document {
   to_location: PackageLocation;
 }
 
-export const PackageSchema = SchemaFactory.createForClass(Package);
+export const PackageSchema = SchemaFactory.createForClass<Package | Package>(Package);
+// PackageSchema.plugin();

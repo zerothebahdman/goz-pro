@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { PaginationModel, PaginationOptions, paginate } from '../common/pagination-wrapper';
 import mongoose, { Model } from 'mongoose';
 
-import { Delivery } from './schema/delivery.schema';
+import { Delivery, DeliveryDocument } from './schema/delivery.schema';
 import { DeliveryDTO } from './delivery.validator';
 import { InjectModel } from '@nestjs/mongoose';
 import { SocketIOProxy } from '../web-socket/ws.gateway';
@@ -17,8 +18,12 @@ export class DeliveryService {
     return await this.delivery.create({ ...rest, package: packageID });
   }
 
-  async findAll() {
-    return await this.delivery.find<Delivery>().populate('package');
+  async findAll(filter: Partial<DeliveryDocument>, options?: Partial<PaginationOptions>, shouldPaginate = true) {
+    Object.assign(options, { populate: 'package' });
+
+    return shouldPaginate
+      ? <PaginationModel<Delivery>>await paginate(filter, this.delivery, options)
+      : await this.delivery.find(<mongoose.FilterQuery<Delivery>>filter).populate('package');
   }
 
   async findOne(id: string, eagerLoad = false, eagerLoadField?: string) {
