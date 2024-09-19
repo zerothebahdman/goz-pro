@@ -24,12 +24,6 @@ async function bootstrap() {
   app.use(captureBody);
   const config = app.get(ConfigService);
 
-  app.use((req: Request, _res: Response, next: NextFunction) => {
-    // If x-request-id is not present, generate one (useful for distributed tracing)
-    req.headers['x-request-id'] = req.headers['x-request-id'] ?? v4();
-    next();
-  });
-
   await app.listen(config.get<number>('port') || 3210, '0.0.0.0', () => {
     logger.log(`Server 🚀 is running on on port ${config.get<number>('port') || 3210}`);
   });
