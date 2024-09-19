@@ -21,7 +21,7 @@ import { ControllerRes } from '../common/http';
 import { Delivery } from './schema/delivery.schema';
 import { Request, Response } from 'express';
 import { YupValidationPipe } from '@blinkclaud/octobus';
-import { DeliveryDTO, GetDeliveriesQuery, isDelivery, isDeliveryID, isGetDeliveries } from './delivery.validator';
+import { DeliveryDTO, isDelivery, isDeliveryID } from './delivery.validator';
 import { PackagesService } from '../packages';
 import { PaginationModel } from '../common/pagination-wrapper';
 import pick from '../common/pick';
@@ -55,11 +55,7 @@ export class DeliveriesController extends ControllerRes<ControllerResponse> {
   }
 
   @Get('/')
-  async getDeliveries(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Query(new YupValidationPipe(isGetDeliveries)) query: GetDeliveriesQuery,
-  ) {
+  async getDeliveries(@Req() req: Request, @Res() res: Response, @Query() query: any) {
     const filter = pick(query, ['package', 'status']);
     const options = pick(query, ['page', 'limit', 'populate', 'order_by']);
 

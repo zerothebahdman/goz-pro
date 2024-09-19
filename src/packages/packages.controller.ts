@@ -20,15 +20,7 @@ import { PackagesService } from './packages.service';
 import TYPES from '../config/inversify.types';
 import { Request, Response } from 'express';
 import { YupValidationPipe } from '@blinkclaud/octobus';
-import {
-  GetPackagesQuery,
-  isGetPackages,
-  isPackage,
-  isPackageID,
-  isUpdatePackage,
-  PackageDTO,
-  UpdatePackageDTO,
-} from './package.validator';
+import { isPackage, isPackageID, isUpdatePackage, PackageDTO, UpdatePackageDTO } from './package.validator';
 import { Package } from './schema/package.schema';
 import { DeliveryService } from '../deliveries';
 import pick from '../common/pick';
@@ -43,11 +35,7 @@ export class PackagesController extends ControllerRes<PackageControllerRes> {
   @Inject(TYPES.DeliveryService) private readonly deliveries: DeliveryService;
 
   @Get('/')
-  async getPackages(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Query(new YupValidationPipe(isGetPackages)) query: GetPackagesQuery,
-  ) {
+  async getPackages(@Req() req: Request, @Res() res: Response, @Query() query: any) {
     try {
       const options = pick(query, ['page', 'limit', 'populate', 'order_by']);
       const resp = await this.packages.findAll({}, options);
