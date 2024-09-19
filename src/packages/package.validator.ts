@@ -37,3 +37,14 @@ export const isUpdatePackage = Yup.object().shape({
 });
 
 export type UpdatePackageDTO = Yup.InferType<typeof isUpdatePackage>;
+
+const isPaginate = Yup.object().shape({
+  limit: Yup.number().optional().min(1),
+  page: Yup.number().optional().min(1),
+  populate: Yup.string().optional(),
+  order_by: Yup.string().optional(),
+});
+
+export const isGetPackages = isPaginate;
+
+export type GetPackagesQuery = Yup.InferType<typeof isGetPackages>;
