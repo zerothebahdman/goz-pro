@@ -29,3 +29,17 @@ export const isUpdateDeliveryLocation = Yup.object().shape({
 });
 
 export type UpdateDeliveryLocationDTO = Yup.InferType<typeof isUpdateDeliveryLocation>;
+
+export const isPaginate = Yup.object().shape({
+  limit: Yup.number().optional().min(1),
+  page: Yup.number().optional().min(1),
+  populate: Yup.string().optional(),
+  order_by: Yup.string().optional(),
+});
+
+export const isGetDeliveries = isPaginate.shape({
+  package: Yup.string().optional().length(24),
+  status: Yup.string().optional().oneOf(deliveryStatus),
+});
+
+export type GetDeliveriesQuery = Yup.InferType<typeof isGetDeliveries>;

@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 
+import { isPaginate } from '../deliveries/delivery.validator';
+
 export const isPackage = Yup.object().shape({
   description: Yup.string().required(),
   weight: Yup.number().required(),
@@ -37,3 +39,7 @@ export const isUpdatePackage = Yup.object().shape({
 });
 
 export type UpdatePackageDTO = Yup.InferType<typeof isUpdatePackage>;
+
+export const isGetPackages = isPaginate.shape({});
+
+export type GetPackagesQuery = Yup.InferType<typeof isGetPackages>;
