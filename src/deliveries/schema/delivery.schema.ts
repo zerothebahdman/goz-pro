@@ -3,12 +3,12 @@ import mongoose, { Document, HydratedDocument } from 'mongoose';
 
 import { Package } from '../../packages';
 
-export const deliveryStatus = <const>['open', 'picked-up', 'in-transit', 'delivered'];
+export const deliveryStatus = <const>['open', 'picked-up', 'in-transit', 'delivered', 'failed'];
 export type DeliveryStatus = (typeof deliveryStatus)[number];
 
 export interface DeliveryLocation {
   type: string;
-  coordinates: [number, number];
+  coordinates: number[];
 }
 
 export type DeliveryDocument = HydratedDocument<Delivery>;

@@ -22,7 +22,7 @@ import { Request, Response } from 'express';
 import { YupValidationPipe } from '@blinkclaud/octobus';
 import { isPackage, isPackageID, PackageDTO } from './package.validator';
 import { Package } from './schema/package.schema';
-import { DeliveriesService } from '../deliveries';
+import { DeliveryService } from '../deliveries';
 
 type PackageControllerRes = Package | Package[];
 
@@ -30,7 +30,7 @@ type PackageControllerRes = Package | Package[];
 @Controller({ path: 'packages', version: '1' })
 export class PackagesController extends ControllerRes<PackageControllerRes> {
   @Inject(TYPES.PackageService) private readonly packages: PackagesService;
-  @Inject(TYPES.DeliveryService) private readonly deliveries: DeliveriesService;
+  @Inject(TYPES.DeliveryService) private readonly deliveries: DeliveryService;
 
   @Get('/')
   async getPackages(@Req() req: Request, @Res() res: Response, @Query() query: any) {

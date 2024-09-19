@@ -36,7 +36,7 @@ export class PackagesService {
    * @returns the array of packages
    */
   async findAll(query: Partial<Package>) {
-    return await this.package.find<Package>();
+    return await this.package.find<Package>().populate('active_delivery');
   }
 
   async findOne(id: string) {

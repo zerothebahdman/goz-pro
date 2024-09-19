@@ -1,13 +1,16 @@
+import { Inject, Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 
 import { Delivery } from './schema/delivery.schema';
 import { DeliveryDTO } from './delivery.validator';
 import { InjectModel } from '@nestjs/mongoose';
-import { Injectable } from '@nestjs/common';
+import { SocketIOProxy } from '../web-socket/ws.gateway';
+import TYPES from '../config/inversify.types';
 
 @Injectable()
-export class DeliveriesService {
+export class DeliveryService {
   @InjectModel(Delivery.name) private readonly delivery: Model<Delivery>;
+  @Inject(TYPES.SocketIO) private readonly socket: SocketIOProxy;
 
   async create(dto: DeliveryDTO) {
     const { package_id: packageID, ...rest } = dto;
@@ -24,9 +27,12 @@ export class DeliveriesService {
       : await this.delivery.findById(new mongoose.Types.ObjectId(id));
   }
 
-  async update(delivery: Delivery, dto: any) {
+  async update(delivery: Delivery, dto: Partial<Delivery>) {
     delivery.set(dto);
-    return await delivery.save();
+    const updatedDelivery = await delivery.save();
+
+    this.socket.broadcastEvent('delivery_updated', updatedDelivery);
+    return updatedDelivery;
   }
 
   async delete(id: string) {
