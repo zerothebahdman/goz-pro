@@ -56,11 +56,12 @@ export class PackagesService {
   async update(packageData: PackageDocument, dto: PackageDTO) {
     const toLocation: PackageLocation = {
       type: 'Point',
-      coordinates: dto.to_location,
+      coordinates: dto.to_location ?? packageData.to_location.coordinates,
     };
+
     const fromLocation: PackageLocation = {
       type: 'Point',
-      coordinates: dto.from_location,
+      coordinates: dto.from_location ?? packageData.from_location.coordinates,
     };
     packageData.set({ ...dto, to_location: toLocation, from_location: fromLocation });
     return packageData.save();

@@ -20,7 +20,7 @@ import { PackagesService } from './packages.service';
 import TYPES from '../config/inversify.types';
 import { Request, Response } from 'express';
 import { YupValidationPipe } from '@blinkclaud/octobus';
-import { isPackage, isPackageID, PackageDTO } from './package.validator';
+import { isPackage, isPackageID, isUpdatePackage, PackageDTO, UpdatePackageDTO } from './package.validator';
 import { Package } from './schema/package.schema';
 import { DeliveryService } from '../deliveries';
 import pick from '../common/pick';
@@ -70,7 +70,7 @@ export class PackagesController extends ControllerRes<PackageControllerRes> {
     @Req() req: Request,
     @Res() res: Response,
     @Param(new YupValidationPipe(isPackageID)) id: string,
-    @Body(new YupValidationPipe(isPackage)) body: PackageDTO,
+    @Body(new YupValidationPipe(isUpdatePackage)) body: UpdatePackageDTO,
   ) {
     let resp = await this.packages.findOne(id);
     if (!resp) {
