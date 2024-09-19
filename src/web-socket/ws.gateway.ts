@@ -19,46 +19,20 @@ export class SocketIOProxy implements OnModuleInit {
   @WebSocketServer()
   server: Server;
 
+  /**
+   * Listens for connection and disconnection events on the socket.
+   * When a connection is established, emits a connection event with the socket ID.
+   * When a disconnection is detected, disconnects the socket.
+   */
   async onModuleInit() {
     this.server.on('connection', async (socket) => {
-      // const { user_id } = socket.handshake.query;
-      // const user = user_id as string;
-      // if (!user) {
-      //   this.server.to(socket.id).emit('error', {
-      //     status: 'error',
-      //     message: 'User ID not provided',
-      //   });
-      //   socket.disconnect(true);
-      //   return;
-      // }
       const socketId = socket.id;
-      // await this.saveUserSocketId(user, socketId);
-
-      // this.logger.log({
-      //   message: `User ${user} connected with socket id ${socketId}`,
-      // });
-
-      // const getJobs = await this.queue.getJob(user);
-      // if (getJobs?.length > 0) {
-      //   this.logger.log({
-      //     message: `User ${user} has ${getJobs?.length} pending jobs`,
-      //   });
-      //   await this.queue.processJob(user, async (data) => {
-      //     const { event, data: eventData } = data;
-      //     await this.emitToUser(user, event, eventData);
-      //   });
-      // }
-
       socket.emit('connection', { socket_id: socketId });
       this.logger.log({
         message: `Connected with socket id ${socketId}`,
       });
 
       socket.on('disconnect', async () => {
-        // this.logger.log({
-        //   message: `User ${user} disconnected with socket id ${socket.id}`,
-        // });
-        // await redis.del(this.getCacheKey(user));
         socket.disconnect(true);
       });
     });
